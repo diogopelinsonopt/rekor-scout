@@ -1,0 +1,37 @@
+services:
+  webhook:
+    build: ./webhook
+    container_name: rekor_webhook
+    environment:
+      - TZ=America/Sao_Paulo
+    ports:
+      - "9001:9001"
+    restart: unless-stopped
+
+  # Hotfolder -> Webhook (gera alpr_results)
+  frames-watcher:
+    build: ./frames-watcher
+    container_name: rekor_frames_watcher
+    environment:
+      - TZ=America/Sao_Paulo
+      - CAMERA_ID=1
+      - BACKEND=mock                  # mock agora; depois pode trocar p/ rekor_api
+      - DEFAULT_REGION=us-tx
+      - FILE_GLOB=*.jpg,*.jpeg,*.png
+      - DEBOUNCE_MS=400
+      - RESCAN_SECONDS=2
+      # >>> NOVO: escolha o destino <<<
+      - SINK=file                     # file  |  webhook
+      - SINK_PATH=/frames/results.ndjson
+      # (se usar webhook, informe a URL)
+      - WEBHOOK_URL=http://webhook:9001/alpr
+      # (se for usar API paga no futuro)
+      - REKOR_API_URL=
+      - REKOR_API_KEY=
+      - REKOR_COUNTRY=us
+      - REKOR_STATE_HINT=
+    volumes:
+      - ./frames:/frames:rw
+    depends_on:
+      - webhook
+    restart: unless-stopped
