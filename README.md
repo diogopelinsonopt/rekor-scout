@@ -1,4 +1,4 @@
-# Rekor POC — Hotfolder → JSON (e/ou Webhook)
+# Rekor POC 
 
 Esta POC entrega um pipeline simples e robusto para reconhecimento de placas com **câmeras gravando frames em uma pasta**.
 Ele funciona **sem licença** (modo *mock* que gera um resultado determinístico por arquivo) e já fica **100% pronto** para, quando chegar a licença, plugar o **Rekor Scout Agent** ou a **API paga** sem refatorar nada da arquitetura.
